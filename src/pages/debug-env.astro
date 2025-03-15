@@ -1,0 +1,116 @@
+---
+// Debug page to check environment variables
+// IMPORTANT: Remove this page before going to production!
+
+// Get environment variables
+const envVars = {
+  PUBLIC_STRAPI_URL: import.meta.env.PUBLIC_STRAPI_URL || 'Not defined',
+  STRAPI_API_TOKEN_STATUS: import.meta.env.STRAPI_API_TOKEN ? 'Defined (value hidden)' : 'Not defined',
+  NODE_ENV: import.meta.env.NODE_ENV || 'Not defined',
+  PROD: import.meta.env.PROD ? 'True' : 'False',
+  DEV: import.meta.env.DEV ? 'True' : 'False',
+};
+
+// Check if request is authenticated (simple password protection)
+const requestPassword = Astro.url.searchParams.get('key');
+const isAuthorized = requestPassword === 'debug123'; // Change this to a secure password
+
+// Only show environment variables if authorized
+const showEnv = isAuthorized;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Environment Debug</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #333;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+      .warning {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1.5rem;
+      }
+      .env-var {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1rem;
+      }
+      .env-name {
+        font-weight: bold;
+        color: #0066cc;
+      }
+      .env-value {
+        font-family: monospace;
+        background-color: #e9ecef;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.2rem;
+      }
+      .auth-form {
+        background-color: #e9ecef;
+        padding: 1.5rem;
+        border-radius: 0.25rem;
+        margin-top: 2rem;
+      }
+      input, button {
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      button {
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Environment Variables Debug</h1>
+    
+    <div class="warning">
+      <strong>Warning:</strong> This page displays sensitive configuration information.
+      Remove this page before deploying to production or restrict access with proper authentication.
+    </div>
+
+    {showEnv ? (
+      <div>
+        <h2>Environment Variables</h2>
+        {Object.entries(envVars).map(([key, value]) => (
+          <div class="env-var">
+            <div class="env-name">{key}</div>
+            <div class="env-value">{value}</div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="auth-form">
+        <h2>Authentication Required</h2>
+        <p>Enter the debug key to view environment variables:</p>
+        <form>
+          <div>
+            <input type="password" name="key" placeholder="Debug key" />
+          </div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    )}
+  </body>
+</html>

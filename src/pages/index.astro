@@ -11,6 +11,12 @@ import { getSiteConfig } from '../utils/strapi.js';
 const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
 const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN;
 
+// Debug logging for environment variables
+console.log('Environment Variables Debug:');
+console.log('- PUBLIC_STRAPI_URL:', import.meta.env.PUBLIC_STRAPI_URL ? 'Defined' : 'Undefined');
+console.log('- STRAPI_API_TOKEN:', import.meta.env.STRAPI_API_TOKEN ? 'Defined (value hidden)' : 'Undefined');
+console.log('- Final STRAPI_URL being used:', STRAPI_URL);
+
 // Fetch site configuration for title
 const siteConfig = await getSiteConfig();
 const pageTitle = siteConfig?.siteName || "Workshop Landing Page";

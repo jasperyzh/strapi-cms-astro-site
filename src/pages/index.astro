@@ -7,8 +7,9 @@ import Pricing from '../components/Pricing.astro';
 import CTA from '../components/CTA.astro';
 import { getSiteConfig } from '../utils/strapi.js';
 
-// Get Strapi URL from environment variables
+// Get Strapi URL and API token from environment variables
 const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN;
 
 // Fetch site configuration for title
 const siteConfig = await getSiteConfig();
@@ -18,8 +19,34 @@ const pageTitle = siteConfig?.siteName || "Workshop Landing Page";
 let isStrapiAvailable = true;
 
 // Check if Strapi is available
+console.log('Checking Strapi availability at:', STRAPI_URL);
 try {
-  await fetch(`${STRAPI_URL}/api/ping`);
+  // Try to fetch a known endpoint instead of /api/ping
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  
+  // Add Authorization header if API token is available
+  if (STRAPI_API_TOKEN) {
+    headers['Authorization'] = `Bearer ${STRAPI_API_TOKEN}`;
+    console.log('Using API token for Strapi check');
+  } else {
+    console.log('No API token available for Strapi check');
+  }
+  
+  const response = await fetch(`${STRAPI_URL}/api/hero`, {
+    headers,
+  });
+  
+  // Log the response status
+  console.log('Strapi response status:', response.status);
+  
+  // Only mark as available if we get a successful response
+  isStrapiAvailable = response.ok;
+  
+  if (!response.ok) {
+    console.error('Strapi server returned an error status:', response.status);
+  }
 } catch (error) {
   console.error('Strapi server is not available:', error);
   isStrapiAvailable = false;

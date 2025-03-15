@@ -3,7 +3,16 @@
  */
 
 // Use environment variable for Strapi URL with fallback to localhost for development
-const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+// Remove trailing slash if present to ensure consistent URL formatting
+let strapiUrl = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+// Remove trailing slash if it exists
+if (strapiUrl.endsWith('/')) {
+  strapiUrl = strapiUrl.slice(0, -1);
+}
+const STRAPI_URL = strapiUrl;
+
+// Log the Strapi URL being used for debugging
+console.log('Using Strapi URL:', STRAPI_URL);
 // Add your Strapi API token here after creating it in the Strapi admin panel
 const STRAPI_API_TOKEN = import.meta.env.STRAPI_API_TOKEN; // You'll need to fill this in with your actual token
 
@@ -37,7 +46,8 @@ export async function fetchFromStrapi(endpoint, options = {}) {
     });
 
     if (!response.ok) {
-      throw new Error(`Error fetching from Strapi: ${response.statusText}`);
+      console.warn(`Warning: Error fetching from Strapi: ${response.status} ${response.statusText} for endpoint ${endpoint}`);
+      return { data: null };
     }
 
     const data = await response.json();

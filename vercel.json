@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "astro",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "PUBLIC_STRAPI_URL": "https://strapi-cms-0m1d.onrender.com/",
+    "STRAPI_API_TOKEN": "REPLACE_WITH_YOUR_STRAPI_API_TOKEN"
+  }
+}

@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import AboutUs from '../components/AboutUs.astro';
+import Experience from '../components/Experience.astro';
+import Pricing from '../components/Pricing.astro';
+import CTA from '../components/CTA.astro';
+import { getSiteConfig } from '../utils/strapi.js';
+
+// Get Strapi URL from environment variables
+const STRAPI_URL = import.meta.env.PUBLIC_STRAPI_URL || 'http://localhost:1337';
+
+// Fetch site configuration for title
+const siteConfig = await getSiteConfig();
+const pageTitle = siteConfig?.siteName || "Workshop Landing Page";
+
+// Flag to check if Strapi is available
+let isStrapiAvailable = true;
+
+// Check if Strapi is available
+try {
+  await fetch(`${STRAPI_URL}/api/ping`);
+} catch (error) {
+  console.error('Strapi server is not available:', error);
+  isStrapiAvailable = false;
+}
+---
+
+<Layout title={pageTitle}>
+  {!isStrapiAvailable && (
+    <div class="strapi-error">
+      <div class="container">
+        <div class="error-message">
+          <h2>⚠️ Strapi CMS Not Available</h2>
+          <p>The Strapi CMS server is not running. Content will display with default values.</p>
+          <div class="error-instructions">
+            <p>To start Strapi, run these commands:</p>
+            <pre><code>cd strapi-cms
+npm run develop</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+
+	<main>
+		<Hero />
+		<AboutUs />
+		<Experience />
+		<Pricing />
+		<CTA />
+	</main>
+</Layout>
+
+<style>
+	main {
+		width: 100%;
+	}
+
+  .strapi-error {
+    background-color: #fff3cd;
+    border: 1px solid #ffecb5;
+    padding: 1rem 0;
+  }
+
+  .error-message {
+    text-align: center;
+    color: #856404;
+  }
+
+  .error-message h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .error-instructions {
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    text-align: left;
+  }
+
+  .error-instructions pre {
+    margin: 0;
+    background-color: #212529;
+    color: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+  }
+</style>

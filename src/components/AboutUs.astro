@@ -1,0 +1,155 @@
+---
+// About Us component for the workshop landing page
+import { getAboutSection, getStrapiImageUrl } from '../utils/strapi.js';
+
+// Fetch about section data from Strapi
+const aboutData = await getAboutSection();
+
+// Set default values in case Strapi data is not available
+const title = aboutData?.title || "Who We Are";
+const description = aboutData?.description || "A passionate team of industry experts committed to sharing knowledge and empowering professionals.";
+const content = aboutData?.content || "We're a collective of industry veterans, certified trainers, and passionate educators with over 15 years of experience in delivering transformative workshop experiences. Our mission is to bridge the gap between theoretical knowledge and practical application through immersive, hands-on learning experiences.";
+
+const imageUrl = aboutData?.featuredImage ? getStrapiImageUrl(aboutData.featuredImage) : "https://images.unsplash.com/photo-1558403194-611308249627?q=80&w=1000&auto=format&fit=crop";
+const imageAlt = aboutData?.featuredImage?.alternativeText || "Our team of expert workshop facilitators";
+
+// Stats with fallbacks
+const stats = aboutData?.stats || [
+  { number: "500+", label: "Workshops Completed" },
+  { number: "5,000+", label: "Professionals Trained" },
+  { number: "98%", label: "Satisfaction Rate" }
+];
+---
+
+<section id="about" class="about">
+  <div class="container">
+    <div class="about-header">
+      <h2>{title}</h2>
+      <div class="underline"></div>
+    </div>
+    
+    <div class="about-content">
+      <div class="about-image">
+        <img src={imageUrl} alt={imageAlt} />
+      </div>
+      
+      <div class="about-text">
+        <p class="lead">{description}</p>
+        <p>{content}</p>
+        
+        <div class="about-stats">
+          {stats.map(stat => (
+            <div class="stat">
+              <span class="stat-number">{stat.number}</span>
+              <span class="stat-label">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background-color: white;
+  }
+  
+  .about-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+  }
+  
+  .underline {
+    height: 4px;
+    width: 60px;
+    background-color: var(--primary-color);
+    margin: 0 auto;
+  }
+  
+  .about-content {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+  }
+  
+  .about-image {
+    flex: 1;
+  }
+  
+  .about-image img {
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .about-text {
+    flex: 1;
+  }
+  
+  .lead {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+  
+  .about-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  @media (max-width: 768px) {
+    .about-content {
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .about-stats {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 2rem;
+    }
+    
+    .lead {
+      font-size: 1.25rem;
+    }
+  }
+</style>

@@ -148,16 +148,16 @@ if (isAuthorized) {
 
     {showEnv ? (
       <div>
-        <h2>Environment Variables</h2>
-        {Object.entries(envVars).map(([key, value]) => (
-          <div class="env-var">
-            <div class="env-name">{key}</div>
-            <div class="env-value">{value}</div>
-          </div>
-        ))}
-      </div>
-      
-      {isAuthorized && (
+        <div>
+          <h2>Environment Variables</h2>
+          {Object.entries(envVars).map(([key, value]) => (
+            <div class="env-var">
+              <div class="env-name">{key}</div>
+              <div class="env-value">{value}</div>
+            </div>
+          ))}
+        </div>
+        
         <div class="connection-test">
           <h2>Strapi Connection Test</h2>
           <div class="env-var">
@@ -169,7 +169,7 @@ if (isAuthorized) {
             <pre class="env-value">{strapiResponseDetails}</pre>
           </div>
         </div>
-      )}
+      </div>
     ) : (
       <div class="auth-form">
         <h2>Authentication Required</h2>
